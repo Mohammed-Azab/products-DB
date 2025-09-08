@@ -125,7 +125,7 @@ class Database {
           is_nullable as nullable,
           column_default as defaultValue,
           character_maximum_length as maxLength,
-          column_key as key
+          column_key as \`key\`
         FROM information_schema.columns 
         WHERE table_schema = DATABASE() 
         AND table_name = ?

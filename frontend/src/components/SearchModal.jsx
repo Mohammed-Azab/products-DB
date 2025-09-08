@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Search, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -7,6 +8,7 @@ import { searchApi } from '../lib/api'
 import toast from 'react-hot-toast'
 
 const SearchModal = ({ isOpen, onClose, tables, activeTable }) => {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)

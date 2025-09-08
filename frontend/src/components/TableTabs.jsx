@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -6,6 +7,7 @@ import { tablesApi } from '../lib/api'
 import toast from 'react-hot-toast'
 
 const TableTabs = ({ tables, activeTable, onTableSwitch, onTablesChange }) => {
+  const { t } = useTranslation()
   const [showNewTableInput, setShowNewTableInput] = useState(false)
   const [newTableName, setNewTableName] = useState('')
 
@@ -26,16 +28,16 @@ const TableTabs = ({ tables, activeTable, onTableSwitch, onTablesChange }) => {
       setNewTableName('')
       setShowNewTableInput(false)
       onTablesChange()
-      toast.success('Table created successfully')
+      toast.success(t('messages.itemAdded'))
     } catch (error) {
-      toast.error('Failed to create table')
+      toast.error(t('messages.error'))
     }
   }
 
   const handleDeleteTable = async (tableName, e) => {
     e.stopPropagation()
     
-    if (!confirm(`Are you sure you want to delete table "${tableName}"?`)) {
+    if (!confirm(t('messages.confirmDelete'))) {
       return
     }
 

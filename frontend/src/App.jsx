@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import Header from './components/Header'
 import TableTabs from './components/TableTabs'
 import DataTable from './components/DataTable'
@@ -8,6 +9,7 @@ import { tablesApi, dataApi } from './lib/api'
 import toast from 'react-hot-toast'
 
 function App() {
+  const { i18n, t } = useTranslation()
   const [tables, setTables] = useState([])
   const [activeTable, setActiveTable] = useState(null)
   const [tableData, setTableData] = useState([])
@@ -15,6 +17,12 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [showStats, setShowStats] = useState(false)
+
+  // Set initial document direction for Arabic
+  useEffect(() => {
+    document.dir = i18n.language === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
 
   // Load tables on mount
   useEffect(() => {

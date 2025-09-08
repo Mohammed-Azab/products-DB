@@ -16,10 +16,9 @@ router.get('/:tableName', async (req, res) => {
       sql += ` ORDER BY ${mysql.escapeId(sortBy)} ${sortOrder.toUpperCase()}`
     }
     
-    sql += ` LIMIT ? OFFSET ?`
-    params.push(parseInt(limit), parseInt(offset))
+    sql += ` LIMIT ${parseInt(limit)} OFFSET ${parseInt(offset)}`
     
-    const data = await db.query(sql, params)
+    const data = await db.query(sql)
     const columns = await db.getTableColumns(tableName)
     
     res.json({ rows: data, columns })
