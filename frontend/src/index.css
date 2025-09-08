@@ -60,23 +60,62 @@
 
 /* RTL Support for Arabic */
 [dir="rtl"] {
+  direction: rtl;
   text-align: right;
+  font-family: 'Cairo', 'Segoe UI', 'Tahoma', 'Arial', 'Helvetica Neue', sans-serif;
 }
 
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+  font-family: 'Inter', 'Segoe UI', 'Tahoma', 'Arial', 'Helvetica Neue', sans-serif;
+}
+
+/* Base font for both directions */
+body {
+  font-family: 'Cairo', 'Inter', 'Segoe UI', 'Tahoma', 'Arial', 'Helvetica Neue', sans-serif;
+}
+
+/* Fix for flex direction in RTL */
 [dir="rtl"] .flex {
   flex-direction: row-reverse;
 }
 
+[dir="rtl"] .flex-col {
+  flex-direction: column;
+}
+
+[dir="rtl"] .justify-between {
+  justify-content: space-between;
+}
+
+[dir="rtl"] .items-center {
+  align-items: center;
+}
+
+/* Space utilities for RTL */
 [dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  margin-right: 0.5rem;
   margin-left: 0;
+  margin-right: 0.5rem;
 }
 
 [dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
-  margin-right: 1rem;  
   margin-left: 0;
+  margin-right: 1rem;
 }
 
+/* Margin and padding fixes */
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* Text alignment */
 [dir="rtl"] .text-left {
   text-align: right;
 }
@@ -85,17 +124,39 @@
   text-align: left;
 }
 
-/* Custom scrollbar for RTL */
-[dir="rtl"] ::-webkit-scrollbar {
-  width: 12px;
+/* Table RTL support */
+[dir="rtl"] table {
+  direction: rtl;
 }
 
-[dir="rtl"] ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
+[dir="rtl"] th,
+[dir="rtl"] td {
+  text-align: right;
 }
 
-/* Arabic font support */
-[dir="rtl"] {
-  font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Helvetica Neue', sans-serif;
+[dir="rtl"] th:first-child,
+[dir="rtl"] td:first-child {
+  text-align: right;
+}
+
+/* Button spacing */
+[dir="rtl"] button {
+  direction: rtl;
+}
+
+/* Input fields */
+[dir="rtl"] input {
+  text-align: right;
+  direction: rtl;
+}
+
+/* Tab styling for RTL */
+[dir="rtl"] .tabs {
+  direction: rtl;
+}
+
+/* Card content RTL */
+[dir="rtl"] .card {
+  direction: rtl;
+  text-align: right;
 }
