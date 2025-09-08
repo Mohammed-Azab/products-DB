@@ -18,14 +18,14 @@ function HeaderAr({ onSearch, onStats }) {
 
           {/* Actions */}
           <div className="flex items-center space-x-reverse space-x-4">
-            {/* Language Switcher */}
-            <Link 
-              to="/en" 
-              className="flex items-center space-x-reverse space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+            {/* Stats Button */}
+            <button
+              onClick={onStats}
+              className="flex items-center space-x-reverse space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
             >
-              <Globe className="h-4 w-4" />
-              <span>English</span>
-            </Link>
+              <BarChart3 className="h-4 w-4" />
+              <span>الإحصائيات</span>
+            </button>
 
             {/* Search Button */}
             <button
@@ -36,14 +36,14 @@ function HeaderAr({ onSearch, onStats }) {
               <span>بحث</span>
             </button>
 
-            {/* Stats Button */}
-            <button
-              onClick={onStats}
-              className="flex items-center space-x-reverse space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+            {/* Language Switcher */}
+            <Link 
+              to="/en" 
+              className="flex items-center space-x-reverse space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
             >
-              <BarChart3 className="h-4 w-4" />
-              <span>الإحصائيات</span>
-            </button>
+              <Globe className="h-4 w-4" />
+              <span>English</span>
+            </Link>
           </div>
         </div>
       </div>
