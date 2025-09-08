@@ -183,11 +183,11 @@ const DataTable = ({
         </div>
 
         {/* Table */}
-        <div className="overflow-auto max-h-[600px]">
+        <div className="overflow-auto max-h-[600px] table-container">
           <table className="w-full">
-            <thead className="sticky top-0 bg-muted/50 border-b">
+            <thead className="sticky top-0 bg-gray-50 border-b">
               <tr>
-                <th className="w-12 p-2 text-left">
+                <th className="w-12 p-2 text-left bg-gray-100">
                   <input
                     type="checkbox"
                     checked={selectedRows.size === tableData.length && tableData.length > 0}
@@ -196,13 +196,13 @@ const DataTable = ({
                   />
                 </th>
                 {tableColumns.map((column) => (
-                  <th key={column.name} className="p-2 text-left font-medium text-sm border-r">
+                  <th key={column.name} className="p-2 text-left font-medium text-sm border-r bg-gray-100">
                     <div className="flex items-center justify-between group">
-                      <span>{column.name}</span>
+                      <span className="text-gray-700">{column.name}</span>
                       {column.name !== 'id' && (
                         <button
                           onClick={() => onDeleteColumn(column.name)}
-                          className="opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive/80"
+                          className="opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-800"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -216,9 +216,9 @@ const DataTable = ({
               {tableData.map((row, rowIndex) => (
                 <tr 
                   key={row.id || rowIndex} 
-                  className={`border-b hover:bg-muted/25 ${selectedRows.has(rowIndex) ? 'bg-muted/50' : ''}`}
+                  className={`border-b hover:bg-gray-50 ${selectedRows.has(rowIndex) ? 'bg-blue-50' : 'bg-white'}`}
                 >
-                  <td className="p-2">
+                  <td className="p-2 bg-white">
                     <input
                       type="checkbox"
                       checked={selectedRows.has(rowIndex)}
@@ -227,13 +227,13 @@ const DataTable = ({
                     />
                   </td>
                   {tableColumns.map((column) => (
-                    <td key={column.name} className="p-1 border-r">
+                    <td key={column.name} className="p-1 border-r bg-white">
                       {editingCell?.rowIndex === rowIndex && editingCell?.columnName === column.name ? (
                         <div className="flex items-center space-x-1">
                           <Input
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
-                            className="h-8 text-sm"
+                            className="h-8 text-sm bg-white text-gray-900"
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') handleCellSave()
                               if (e.key === 'Escape') handleCellCancel()
@@ -250,7 +250,7 @@ const DataTable = ({
                       ) : (
                         <div
                           onClick={() => handleCellEdit(rowIndex, column.name, row[column.name])}
-                          className="min-h-[32px] p-1 cursor-pointer hover:bg-accent rounded text-sm flex items-center"
+                          className="min-h-[32px] p-1 cursor-pointer hover:bg-gray-100 rounded text-sm flex items-center text-gray-900"
                         >
                           {row[column.name] || (column.name === 'id' ? row.id : '')}
                         </div>

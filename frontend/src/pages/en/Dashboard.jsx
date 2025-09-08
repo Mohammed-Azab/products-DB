@@ -53,12 +53,9 @@ function EnglishDashboard() {
   const loadTableData = async (tableName) => {
     try {
       setLoading(true)
-      const [dataResponse, columnsResponse] = await Promise.all([
-        dataApi.getData(tableName),
-        dataApi.getColumns(tableName)
-      ])
-      setTableData(dataResponse.data)
-      setTableColumns(columnsResponse.data)
+      const response = await dataApi.getData(tableName)
+      setTableData(response.data.rows)
+      setTableColumns(response.data.columns)
     } catch (error) {
       toast.error(`Failed to load ${tableName} data`)
       console.error(`Error loading ${tableName} data:`, error)

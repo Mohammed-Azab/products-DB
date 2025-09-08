@@ -118,15 +118,15 @@ function DataTableAr({ data, columns, loading, onRefresh, onAdd, onUpdate, onDel
         <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
           <h3 className="text-lg font-medium mb-4">إضافة سجل جديد</h3>
           <div className="grid grid-cols-2 gap-4">
-            {columns.filter(col => col.COLUMN_NAME !== 'id' && col.COLUMN_NAME !== 'created_at' && col.COLUMN_NAME !== 'updated_at').map((column) => (
-              <div key={column.COLUMN_NAME}>
+            {columns.filter(col => col.name !== 'id' && col.name !== 'created_at' && col.name !== 'updated_at').map((column) => (
+              <div key={column.name}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {columnNames[column.COLUMN_NAME] || column.COLUMN_NAME}
+                  {columnNames[column.name] || column.name}
                 </label>
                 <input
                   type="text"
-                  value={newData[column.COLUMN_NAME] || ''}
-                  onChange={(e) => setNewData({...newData, [column.COLUMN_NAME]: e.target.value})}
+                  value={newData[column.name] || ''}
+                  onChange={(e) => setNewData({...newData, [column.name]: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-right"
                 />
               </div>
@@ -156,10 +156,10 @@ function DataTableAr({ data, columns, loading, onRefresh, onAdd, onUpdate, onDel
             <tr>
               {columns.map((column) => (
                 <th
-                  key={column.COLUMN_NAME}
+                  key={column.name}
                   className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  {columnNames[column.COLUMN_NAME] || column.COLUMN_NAME}
+                  {columnNames[column.name] || column.name}
                 </th>
               ))}
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -171,16 +171,16 @@ function DataTableAr({ data, columns, loading, onRefresh, onAdd, onUpdate, onDel
             {filteredData.map((row) => (
               <tr key={row.id} className="hover:bg-gray-50">
                 {columns.map((column) => (
-                  <td key={column.COLUMN_NAME} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                    {editingId === row.id && column.COLUMN_NAME !== 'id' && column.COLUMN_NAME !== 'created_at' && column.COLUMN_NAME !== 'updated_at' ? (
+                  <td key={column.name} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                    {editingId === row.id && column.name !== 'id' && column.name !== 'created_at' && column.name !== 'updated_at' ? (
                       <input
                         type="text"
-                        value={editData[column.COLUMN_NAME] || ''}
-                        onChange={(e) => setEditData({...editData, [column.COLUMN_NAME]: e.target.value})}
+                        value={editData[column.name] || ''}
+                        onChange={(e) => setEditData({...editData, [column.name]: e.target.value})}
                         className="w-full px-2 py-1 border border-gray-300 rounded text-right"
                       />
                     ) : (
-                      row[column.COLUMN_NAME]
+                      row[column.name]
                     )}
                   </td>
                 ))}
