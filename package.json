@@ -1,0 +1,17 @@
+{
+  "name": "products-db",
+  "version": "1.0.0",
+  "description": "Full-stack Products Database Management System",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["database", "products", "excel", "crud", "react", "nodejs"],
+  "author": "Your Name",
+  "license": "MIT"
+}
