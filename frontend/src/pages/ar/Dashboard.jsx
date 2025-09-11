@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import HeaderAr from '../../components/ar/HeaderAr'
-import TableTabsAr from '../../components/ar/TableTabsAr'
+import CategoryTabsAr from '../../components/ar/CategoryTabsAr'
 import DataTableAr from '../../components/ar/DataTableAr'
 import SearchModalAr from '../../components/ar/SearchModalAr'
 import StatsModalAr from '../../components/ar/StatsModalAr'
@@ -113,10 +113,10 @@ function ArabicDashboard() {
       
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow">
-          <TableTabsAr
+          <CategoryTabsAr
             tables={tables}
             activeTable={activeTable}
-            onTableChange={setActiveTable}
+            onTableSelect={setActiveTable}
           />
           
           <DataTableAr

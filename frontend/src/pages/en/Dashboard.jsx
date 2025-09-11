@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from '../../components/Header'
-import TableTabs from '../../components/TableTabs'
+import CategoryTabs from '../../components/CategoryTabs'
 import DataTable from '../../components/DataTable'
 import SearchModal from '../../components/SearchModal'
 import StatsModal from '../../components/StatsModal'
@@ -113,11 +113,10 @@ function EnglishDashboard() {
       
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow">
-          <TableTabs
+          <CategoryTabs
             tables={tables}
             activeTable={activeTable}
-            onTableChange={setActiveTable}
-            language="en"
+            onTableSelect={setActiveTable}
           />
           
           <DataTable
