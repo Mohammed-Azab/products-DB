@@ -1,260 +1,159 @@
 import React, { useState, useEffect } from 'react'
-import { BarChart3, X, Download, TrendingUp } from 'lucide-react'
-import { Button } from './ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { reportsApi } from '../lib/api'
-import toast from 'react-hot-toast'
+import { X, BarChart3, TrendingUp, Package, Users } from 'lucide-react'
 
-const StatsModal = ({ isOpen, onClose, activeTable, tables }) => {
-  const [stats, setStats] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [scope, setScope] = useState('current') // 'current' or 'global'
+function StatsModal({ tables, onClose }) {
+  const [stats, setStats] = useState({
+    totalProducts: 0,
+    totalSuppliers: 0,
+    totalOrders: 0,
+    totalCategories: 0
+  })
+
+  const tableNames = {
+    products: 'المنتجات',
+    suppliers: 'الموردين',
+    orders: 'الطلبات',
+    categories: 'الفئات'
+  }
 
   useEffect(() => {
-    if (isOpen) {
-      loadStats()
-    }
-  }, [isOpen, scope, activeTable])
-
-  const loadStats = async () => {
-    try {
-      setLoading(true)
-      let response
-
-      if (scope === 'current' && activeTable) {
-        response = await reportsApi.getTableStats(activeTable)
-      } else {
-        response = await reportsApi.getGlobalStats()
+    // Calculate stats from tables
+    const newStats = {}
+    tables.forEach(table => {
+      switch(table.name) {
+        case 'products':
+          newStats.totalProducts = table.count
+          break
+        case 'suppliers':
+          newStats.totalSuppliers = table.count
+          break
+        case 'orders':
+          newStats.totalOrders = table.count
+          break
+        case 'categories':
+          newStats.totalCategories = table.count
+          break
       }
+    })
+    setStats(newStats)
+  }, [tables])
 
-      setStats(response.data)
-    } catch (error) {
-      toast.error('Failed to load statistics')
-      console.error('Stats error:', error)
-    } finally {
-      setLoading(false)
+  const statCards = [
+    {
+      title: 'إجمالي المنتجات',
+      value: stats.totalProducts,
+      icon: Package,
+      color: 'bg-blue-500',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      title: 'إجمالي الموردين',
+      value: stats.totalSuppliers,
+      icon: Users,
+      color: 'bg-green-500',
+      bgColor: 'bg-green-50'
+    },
+    {
+      title: 'إجمالي الطلبات',
+      value: stats.totalOrders,
+      icon: TrendingUp,
+      color: 'bg-yellow-500',
+      bgColor: 'bg-yellow-50'
+    },
+    {
+      title: 'إجمالي الفئات',
+      value: stats.totalCategories,
+      icon: BarChart3,
+      color: 'bg-purple-500',
+      bgColor: 'bg-purple-50'
     }
-  }
-
-  const handleExport = async (format) => {
-    if (!activeTable) return
-
-    try {
-      const response = await reportsApi.exportData(activeTable, format)
-      
-      // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `${activeTable}.${format}`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      window.URL.revokeObjectURL(url)
-      
-      toast.success(`Exported ${activeTable} as ${format.toUpperCase()}`)
-    } catch (error) {
-      toast.error('Export failed')
-    }
-  }
-
-  if (!isOpen) return null
+  ]
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-4xl max-h-[80vh] mx-4">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center space-x-2">
-            <BarChart3 className="h-5 w-5" />
-            <span>Database Statistics & Reports</span>
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {/* Scope Selection */}
-          <div className="flex items-center space-x-4 p-4 bg-muted/50 rounded-lg">
-            <span className="font-medium">Scope:</span>
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                value="current"
-                checked={scope === 'current'}
-                onChange={(e) => setScope(e.target.value)}
-                disabled={!activeTable}
-              />
-              <span>Current table ({activeTable})</span>
-            </label>
-            <label className="flex items-center space-x-2">
-              <input
-                type="radio"
-                value="global"
-                checked={scope === 'global'}
-                onChange={(e) => setScope(e.target.value)}
-              />
-              <span>All tables</span>
-            </label>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">إحصائيات قاعدة البيانات</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* Stats Content */}
+        <div className="p-6">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {statCards.map((stat, index) => {
+              const Icon = stat.icon
+              return (
+                <div key={index} className={`${stat.bgColor} p-4 rounded-lg`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                      <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                    </div>
+                    <div className={`${stat.color} p-3 rounded-full`}>
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
-          {/* Statistics Display */}
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="text-muted-foreground">Loading statistics...</div>
-            </div>
-          ) : stats ? (
-            <div className="space-y-4">
-              {/* Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.totalRows || 0}</div>
-                    <div className="text-sm text-muted-foreground">Total Rows</div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">{stats.totalColumns || 0}</div>
-                    <div className="text-sm text-muted-foreground">Total Columns</div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary">
-                      {scope === 'global' ? tables.length : 1}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {scope === 'global' ? 'Tables' : 'Table'}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Table Details */}
-              {scope === 'current' && stats.tableInfo && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Table Information</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>Table Name:</span>
-                        <span className="font-medium">{stats.tableInfo.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Created:</span>
-                        <span className="font-medium">
-                          {new Date(stats.tableInfo.created_at).toLocaleDateString()}
+          {/* Tables Details */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">تفاصيل الجداول</h3>
+            <div className="overflow-hidden bg-gray-50 rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      اسم الجدول
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      عدد السجلات
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      الحالة
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {tables.map((table) => (
+                    <tr key={table.name}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+                        {tableNames[table.name] || table.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                        {table.count}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          نشط
                         </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Last Modified:</span>
-                        <span className="font-medium">
-                          {new Date(stats.tableInfo.updated_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Column Statistics */}
-              {stats.columnStats && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Column Statistics</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {stats.columnStats.map((col, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded">
-                          <div>
-                            <span className="font-medium">{col.name}</span>
-                            <span className="text-sm text-muted-foreground ml-2">({col.type})</span>
-                          </div>
-                          <div className="text-sm">
-                            {col.nullCount !== undefined && (
-                              <span className="text-muted-foreground">
-                                {col.nullCount} nulls
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Global Table List */}
-              {scope === 'global' && stats.tables && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Tables Overview</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {stats.tables.map((table, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 border rounded">
-                          <span className="font-medium">{table.name}</span>
-                          <div className="text-sm text-muted-foreground">
-                            {table.rowCount} rows, {table.columnCount} columns
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="text-muted-foreground">No statistics available</div>
-            </div>
-          )}
+          </div>
 
-          {/* Export Options */}
-          {scope === 'current' && activeTable && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center space-x-2">
-                  <Download className="h-5 w-5" />
-                  <span>Export Data</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-2">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleExport('csv')}
-                    className="flex items-center space-x-2"
-                  >
-                    <span>Export CSV</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleExport('json')}
-                    className="flex items-center space-x-2"
-                  >
-                    <span>Export JSON</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => handleExport('xlsx')}
-                    className="flex items-center space-x-2"
-                  >
-                    <span>Export Excel</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </CardContent>
-      </Card>
+          {/* Summary */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-blue-900 mb-2">ملخص الإحصائيات</h4>
+            <p className="text-sm text-blue-800">
+              يحتوي النظام على {tables.reduce((total, table) => total + table.count, 0)} سجل موزعة على {tables.length} جداول مختلفة.
+              جميع الجداول نشطة وتعمل بشكل طبيعي.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

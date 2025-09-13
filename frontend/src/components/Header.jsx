@@ -1,56 +1,39 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Search, BarChart3, RefreshCw, Database } from 'lucide-react'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import LanguageSwitcher from './LanguageSwitcher'
+import { Search, BarChart3, Database } from 'lucide-react'
 
-const Header = ({ onSearch, onStats, onRefresh }) => {
-  const { t } = useTranslation()
-
+function Header({ onSearch, onStats }) {
   return (
-    <header className="border-b bg-card shadow-sm">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Database className="h-6 w-6 text-primary" />
-              <h1 className="text-2xl font-bold text-foreground">{t('header.title')}</h1>
+    <header className="bg-white shadow-sm border-b" dir="rtl">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Title */}
+          <div className="flex items-center space-x-reverse space-x-3">
+            <Database className="h-8 w-8 text-blue-600" />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">قاعدة بيانات المنتجات</h1>
+              <p className="text-sm text-gray-500">نظام إدارة البيانات</p>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <LanguageSwitcher />
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onSearch}
-              className="flex items-center space-x-2"
-            >
-              <Search className="h-4 w-4" />
-              <span>{t('header.search')}</span>
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
+
+          {/* Actions */}
+          <div className="flex items-center space-x-reverse space-x-4">
+            {/* Stats Button */}
+            <button
               onClick={onStats}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-reverse space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
             >
               <BarChart3 className="h-4 w-4" />
-              <span>{t('header.statistics')}</span>
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onRefresh}
-              className="flex items-center space-x-2"
+              <span>الإحصائيات</span>
+            </button>
+
+            {/* Search Button */}
+            <button
+              onClick={onSearch}
+              className="flex items-center space-x-reverse space-x-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
             >
-              <RefreshCw className="h-4 w-4" />
-              <span>{t('actions.refresh')}</span>
-            </Button>
+              <Search className="h-4 w-4" />
+              <span>بحث</span>
+            </button>
           </div>
         </div>
       </div>

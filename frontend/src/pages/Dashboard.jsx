@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import HeaderAr from '../../components/ar/HeaderAr'
-import CategoryTabsAr from '../../components/ar/CategoryTabsAr'
-import DataTableAr from '../../components/ar/DataTableAr'
-import SearchModalAr from '../../components/ar/SearchModalAr'
-import StatsModalAr from '../../components/ar/StatsModalAr'
-import { tablesApi, dataApi } from '../../lib/api'
+import Header from '../components/Header'
+import CategoryTabs from '../components/CategoryTabs'
+import DataTable from '../components/DataTable'
+import SearchModal from '../components/SearchModal'
+import StatsModal from '../components/StatsModal'
+import { tablesApi, dataApi } from '../lib/api'
 import toast from 'react-hot-toast'
 
-function ArabicDashboard() {
+function Dashboard() {
   const [tables, setTables] = useState([])
   const [activeTable, setActiveTable] = useState(null)
   const [tableData, setTableData] = useState([])
@@ -106,20 +106,20 @@ function ArabicDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
-      <HeaderAr 
+      <Header 
         onSearch={() => setShowSearch(true)}
         onStats={() => setShowStats(true)}
       />
       
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow">
-          <CategoryTabsAr
+          <CategoryTabs
             tables={tables}
             activeTable={activeTable}
             onTableSelect={setActiveTable}
           />
           
-          <DataTableAr
+          <DataTable
             data={tableData}
             columns={tableColumns}
             loading={loading}
@@ -132,14 +132,14 @@ function ArabicDashboard() {
       </main>
 
       {showSearch && (
-        <SearchModalAr
+        <SearchModal
           tables={tables}
           onClose={() => setShowSearch(false)}
         />
       )}
 
       {showStats && (
-        <StatsModalAr
+        <StatsModal
           tables={tables}
           onClose={() => setShowStats(false)}
         />
@@ -148,4 +148,4 @@ function ArabicDashboard() {
   )
 }
 
-export default ArabicDashboard
+export default Dashboard

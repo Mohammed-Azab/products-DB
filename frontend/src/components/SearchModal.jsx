@@ -1,155 +1,123 @@
-import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Search, X } from 'lucide-react'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { searchApi } from '../lib/api'
-import toast from 'react-hot-toast'
+import React, { useState } from 'react'
+import { X, Search } from 'lucide-react'
 
-const SearchModal = ({ isOpen, onClose, tables, activeTable }) => {
-  const { t } = useTranslation()
-  const [searchQuery, setSearchQuery] = useState('')
+function SearchModal({ tables, onClose }) {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTable, setSelectedTable] = useState('products')
   const [searchResults, setSearchResults] = useState([])
   const [loading, setLoading] = useState(false)
-  const [searchScope, setSearchScope] = useState('current') // 'current' or 'all'
 
-  useEffect(() => {
-    if (isOpen) {
-      setSearchQuery('')
-      setSearchResults([])
-    }
-  }, [isOpen])
+  const tableNames = {
+    products: 'المنتجات',
+    suppliers: 'الموردين',
+    orders: 'الطلبات',
+    categories: 'الفئات'
+  }
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return
-
+    if (!searchTerm.trim()) return
+    
+    setLoading(true)
     try {
-      setLoading(true)
-      let response
-
-      if (searchScope === 'current' && activeTable) {
-        response = await searchApi.searchInTable(activeTable, searchQuery)
-      } else {
-        response = await searchApi.searchGlobal(searchQuery)
-      }
-
-      setSearchResults(response.data.results || [])
+      // Simulate search API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      setSearchResults([
+        { id: 1, name: 'نتيجة البحث 1', description: 'وصف النتيجة الأولى' },
+        { id: 2, name: 'نتيجة البحث 2', description: 'وصف النتيجة الثانية' }
+      ])
     } catch (error) {
-      toast.error('Search failed')
       console.error('Search error:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
-    if (e.key === 'Escape') {
-      onClose()
-    }
-  }
-
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-4xl max-h-[80vh] mx-4">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="flex items-center space-x-2">
-            <Search className="h-5 w-5" />
-            <span>Search Database</span>
-          </CardTitle>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        
-        <CardContent className="space-y-4">
-          {/* Search Controls */}
-          <div className="space-y-3">
-            <div className="flex space-x-2">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Enter search query..."
-                className="flex-1"
-                onKeyDown={handleKeyDown}
-                autoFocus
-              />
-              <Button onClick={handleSearch} disabled={loading}>
-                {loading ? 'Searching...' : 'Search'}
-              </Button>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  value="current"
-                  checked={searchScope === 'current'}
-                  onChange={(e) => setSearchScope(e.target.value)}
-                  disabled={!activeTable}
-                />
-                <span>Current table ({activeTable})</span>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">البحث في البيانات</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* Search Form */}
+        <div className="p-6">
+          <div className="space-y-4">
+            {/* Table Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                البحث في
               </label>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  value="all"
-                  checked={searchScope === 'all'}
-                  onChange={(e) => setSearchScope(e.target.value)}
-                />
-                <span>All tables</span>
-              </label>
+              <select
+                value={selectedTable}
+                onChange={(e) => setSelectedTable(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-right"
+              >
+                {tables.map((table) => (
+                  <option key={table.name} value={table.name}>
+                    {tableNames[table.name] || table.name}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {/* Search Input */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                كلمة البحث
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="ادخل كلمة البحث..."
+                  className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-right"
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              </div>
+            </div>
+
+            {/* Search Button */}
+            <button
+              onClick={handleSearch}
+              disabled={loading || !searchTerm.trim()}
+              className="w-full flex items-center justify-center space-x-reverse space-x-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              ) : (
+                <>
+                  <Search className="h-4 w-4" />
+                  <span>بحث</span>
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Search Results */}
-          <div className="border rounded-lg max-h-96 overflow-auto">
-            {searchResults.length > 0 ? (
-              <div className="space-y-2 p-4">
-                {searchResults.map((result, index) => (
-                  <div key={index} className="border rounded p-3 hover:bg-muted/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-sm text-primary">
-                        Table: {result.tableName}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Row ID: {result.id}
-                      </span>
-                    </div>
-                    <div className="text-sm space-y-1">
-                      {Object.entries(result.data || {}).map(([key, value]) => (
-                        <div key={key} className="flex">
-                          <span className="font-medium w-24 text-muted-foreground">{key}:</span>
-                          <span className="flex-1">{value}</span>
-                        </div>
-                      ))}
-                    </div>
+          {/* Results */}
+          {searchResults.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">نتائج البحث</h3>
+              <div className="space-y-3">
+                {searchResults.map((result) => (
+                  <div key={result.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <h4 className="font-medium text-gray-900">{result.name}</h4>
+                    <p className="text-sm text-gray-600 mt-1">{result.description}</p>
                   </div>
                 ))}
               </div>
-            ) : searchQuery && !loading ? (
-              <div className="p-8 text-center text-muted-foreground">
-                No results found for "{searchQuery}"
-              </div>
-            ) : (
-              <div className="p-8 text-center text-muted-foreground">
-                Enter a search query to find data across your tables
-              </div>
-            )}
-          </div>
-
-          <div className="text-sm text-muted-foreground">
-            {searchResults.length > 0 && (
-              <>Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,18 +1,17 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
-import LandingPage from './pages/LandingPage'
-import ArabicDashboard from './pages/ar/Dashboard'
-import EnglishDashboard from './pages/en/Dashboard'
+import Dashboard from './pages/Dashboard'
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/ar" element={<ArabicDashboard />} />
-          <Route path="/en" element={<EnglishDashboard />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/ar" element={<Dashboard />} />
+          {/* Redirect any other routes to main dashboard */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster position="top-center" />
       </div>
